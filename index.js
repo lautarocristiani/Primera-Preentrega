@@ -1,6 +1,7 @@
 class ProductManager{
 
-    static id = 1;
+
+
     constructor(products){
         this.products = products;
     }
@@ -13,21 +14,22 @@ class ProductManager{
         if (this.products.find((p) => p.code == code) || title == null || description == null || Number.isNaN(price) || thumbail == null || Number.isNaN(stock)) {
             console.error("Se ha producido un error");
         } else {
-            let idReal = this.id;
-            this.products.push({title, description, price, thumbail, code, stock, idReal});
-            this.id++;
+            let id;
+            this.products.lenght == undefined ? id = 1 : id = this.products.lenght - 1;
+            console.log(id);
+            this.products.push({title, description, price, thumbail, code, stock, id});
         }
     }
 
     getProductById(id){
-        this.encontrado = 0;
+        let encontrado = true;
         this.products.forEach(p => {
-            if (p.id = id) {
+            if (p.id == id) {
                 console.log(p);
-                this.encontrado++;
+                encontrado = false;
             }
         });
-        if (this.encontrado == 0) {
+        if (encontrado) {
             console.error("Not found");
         }
     }
@@ -38,4 +40,5 @@ let instancia = new ProductManager([]);
 instancia.getProducts();
 instancia.addProducts("producto prueba", "Este es el producto prueba", 200, "Sin imagen", "abc123", 25);
 instancia.getProducts();
-instancia.getProductById(2);
+instancia.addProducts("producto prueba", "Este es el producto prueba", 200, "Sin imagen", "abc123", 25);
+instancia.getProductById(3);
