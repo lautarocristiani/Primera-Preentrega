@@ -1,15 +1,15 @@
-const fs = require("fs");
+import fs from "fs";
 
 class ProductManager{
 
-    constructor(products){
+    constructor(products, path){
         this.products = products;
-        this.path = "./productos.txt";
+        this.path = "./" +path +".txt";
         fs.writeFileSync(this.path, JSON.stringify(this.products));
     }
 
     getProducts() {
-        console.log(JSON.parse(fs.readFileSync(this.path, "utf-8")));
+        return JSON.parse(fs.readFileSync(this.path, "utf-8"));
     }
 
     addProducts(title, description, price, thumbail, code, stock){
@@ -17,7 +17,7 @@ class ProductManager{
             console.error("Se ha producido un error");
         } else {
             let id;
-            this.products.lenght == undefined ? id = 1 : id = this.products[this.products.length-1].id + 1;
+            this.products.length == 0 ? id = 1 : id = this.products[this.products.length-1].id + 1;
             this.products.push({title, description, price, thumbail, code, stock, id});
             fs.writeFileSync(this.path, JSON.stringify(this.products));
         }
@@ -25,13 +25,18 @@ class ProductManager{
 
     getProductById(id){
         this.products = JSON.parse(fs.readFileSync(this.path, "utf-8"));
-        this.products.find((p) => p.id == id) ? console.log(this.products.find((p) => p.id == id)) : console.log("No se ha encontrado el producto");
+        return this.products.find((p) => p.id == id);
     }
 
-    updateProduct(idActualizar, title){
+    updateProduct(idActualizar, title, description, price, thumbail, code, stock){
         this.products.find((p) => {
             if (p.id == idActualizar) {
                 p.title = title;
+                p.description = description;
+                p.price = price;
+                p.thumbail = thumbail;
+                p.code = code;
+                p.stock = stock;
                 fs.writeFileSync(this.path, JSON.stringify(this.products));
             } else {
                 console.log("No se ha encontrado un producto que concida con el ID " +idActualizar);
@@ -56,14 +61,4 @@ class ProductManager{
     }
 }
 
-let instancia = new ProductManager([]);
-
-instancia.getProducts();
-instancia.addProducts("producto prueba", "Este es el producto prueba", 200, "Sin imagen", "abc123", 25);
-instancia.getProducts();
-instancia.addProducts("producto prueba", "Este es el producto prueba", 200, "Sin imagen", "abc123", 25);
-instancia.getProductById(1);
-instancia.updateProduct(1, "a mimir españa");
-instancia.getProducts();
-instancia.deleteProduct(1);
-instancia.getProducts();
+export default ProductManager;
