@@ -27,20 +27,24 @@ router.post('/', (req, res) =>{
 router.post('/:cid/product/:pid', (req, res) =>{
     let cid = req.params.cid;
     let pid = req.params.pid;
-    console.log(cid, pid);
-    let carrito = carts.find(c => c.id == cid);
-    console.log(carrito.products);
-    if (carrito || products.find(p => p.id == pid)) {
+    if (carts.find(c => c.id == cid) || products.find(p => p.id == pid)) {
         for (let i = 0; i < carts.length; i++) {
             if (carts[i].id == cid) {
-                console.log(carts[i].products);
-                if (!carts[i].products) {
+                console.log(carts[i]);
+                if (carts[i].products.length == 0) {
                     carts[i].products.push({product:pid, quantity:1})
                     console.log(carts[i].products);
                 } else {
-                    carts[i].products[1]++;
+                    for (let l = 0; l < carts[i].products.length; l++) {
+                        if (carts[i].products[l].product == pid) {
+                            carts[i].products[l].quantity++;
+                        } else {
+                            carts[i].products.push({product:pid, quantity:1})
+                        }
+                    }
                 }
-
+                fs.writeFileSync(path, JSON.stringify(carts));
+                res.status(201).json("Producto agregado al carrito con éxito");
             }
         }
     } else {
